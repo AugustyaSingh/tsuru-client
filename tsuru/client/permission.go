@@ -183,10 +183,17 @@ func (c *RoleInfo) Run(context *cmd.Context) error {
 	if err != nil {
 		return err
 	}
+	permissions := append([]string(nil), perm.SchemeNames...)
+	permissions = append(permissions, perm.DynamicSchemeNames...)
 	tbl := tablecli.NewTable()
 	tbl.LineSeparator = true
 	tbl.Headers = tablecli.Row{"Name", "Context", "Permissions", "Description"}
-	tbl.AddRow(tablecli.Row{perm.Name, string(perm.ContextType), strings.Join(perm.SchemeNames, "\n"), perm.Description})
+	tbl.AddRow(tablecli.Row{
+		perm.Name,
+		string(perm.ContextType),
+		strings.Join(permissions, "\n"),
+		perm.Description,
+	})
 	fmt.Fprint(context.Stdout, tbl.String())
 	return nil
 }
