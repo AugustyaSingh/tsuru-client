@@ -385,10 +385,10 @@ func (c *RoleAssign) Run(context *cmd.Context) error {
 	}
 	params := url.Values{}
 	var suffix, version string
-	if strings.HasPrefix(roleTarget, "group:") {
+	if groupName, ok := strings.CutPrefix(roleTarget, "group:"); ok {
 		suffix = "group"
 		version = "1.9"
-		params.Set("group_name", strings.TrimPrefix(roleTarget, "group:"))
+		params.Set("group_name", groupName)
 	} else if strings.Contains(roleTarget, "@") {
 		suffix = "user"
 		version = "1.0"
@@ -421,26 +421,29 @@ type RoleDissociate struct{}
 func (c *RoleDissociate) Info() *cmd.Info {
 	return &cmd.Info{
 		Name:    "role-dissociate",
-		Usage:   "<role-name> <user-email>|<token-id> [<context-value>]",
-		Desc:    `Dissociate an existing role from a user or token for some context value.`,
+		Usage:   "<role-name> <user-email>|<token-id>|group:<group-id> [<context-value>]",
+		Desc:    `Dissociate an existing role from a user, token or group for some context value.`,
 		MinArgs: 2,
 	}
 }
 
 func (c *RoleDissociate) Run(context *cmd.Context) error {
 	roleName := context.Args[0]
-	emailOrToken := context.Args[1]
+	roleTarget := context.Args[1]
 	var contextValue string
 	if len(context.Args) > 2 {
 		contextValue = context.Args[2]
 	}
 	params := url.Values{}
 	var suffix, version string
-	if strings.Contains(emailOrToken, "@") {
-		suffix = "user/" + emailOrToken
+	if groupName, ok := strings.CutPrefix(roleTarget, "group:"); ok {
+		suffix = "group/" + groupName
+		version = "1.9"
+	} else if strings.Contains(roleTarget, "@") {
+		suffix = "user/" + roleTarget
 		version = "1.0"
 	} else {
-		suffix = "token/" + emailOrToken
+		suffix = "token/" + roleTarget
 		version = "1.6"
 	}
 	params.Set("context", contextValue)
