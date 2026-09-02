@@ -41,6 +41,7 @@ type Pool struct {
 	Default     bool
 	Provisioner string
 	Allowed     map[string][]string
+	Labels      map[string]string
 }
 
 func (p *Pool) Kind() string {
