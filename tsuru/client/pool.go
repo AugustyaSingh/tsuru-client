@@ -26,29 +26,14 @@ type poolFilter struct {
 	name string
 	team string
 }
-type Pool struct {
-	Name        string
-	Public      bool
-	Default     bool
-	Provisioner string
-	Allowed     map[string][]string
-}
+type Pool tsuru.Pool
 
 func (p Pool) Kind() string {
-	if p.Public {
-		return "public"
-	}
-	if p.Default {
-		return "default"
-	}
-	return ""
+	return poolKind(tsuru.Pool(p))
 }
 
 func (p Pool) GetProvisioner() string {
-	if p.Provisioner == "" {
-		return "default"
-	}
-	return p.Provisioner
+	return poolProvisioner(tsuru.Pool(p))
 }
 
 type PoolList struct {
