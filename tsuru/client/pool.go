@@ -50,6 +50,7 @@ func (p Pool) GetProvisioner() string {
 	}
 	return p.Provisioner
 }
+
 type PoolList struct {
 	fs         *pflag.FlagSet
 	filter     poolFilter
