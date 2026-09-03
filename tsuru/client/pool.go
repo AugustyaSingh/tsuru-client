@@ -26,8 +26,30 @@ type poolFilter struct {
 	name string
 	team string
 }
-type Pool=tsuru.Pool
+type Pool struct {
+	Name        string
+	Public      bool
+	Default     bool
+	Provisioner string
+	Allowed     map[string][]string
+}
 
+func (p Pool) Kind() string {
+	if p.Public {
+		return "public"
+	}
+	if p.Default {
+		return "default"
+	}
+	return ""
+}
+
+func (p Pool) GetProvisioner() string {
+	if p.Provisioner == "" {
+		return "default"
+	}
+	return p.Provisioner
+}
 type PoolList struct {
 	fs         *pflag.FlagSet
 	filter     poolFilter
