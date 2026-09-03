@@ -26,6 +26,7 @@ type poolFilter struct {
 	name string
 	team string
 }
+type Pool=tsuru.Pool
 
 type PoolList struct {
 	fs         *pflag.FlagSet
